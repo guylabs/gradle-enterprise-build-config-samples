@@ -2,7 +2,7 @@ package com.gradle;
 
 import com.gradle.maven.extension.api.scan.BuildScanApi;
 import org.apache.maven.MavenExecutionException;
-import org.apache.maven.execution.MavenSession;
+import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 
@@ -16,13 +16,12 @@ final class BuildScanApiAccessor {
     private BuildScanApiAccessor() {
     }
 
-    @SuppressWarnings("deprecation")
-    static BuildScanApi lookup(MavenSession session, Class<?> extensionClass) throws MavenExecutionException {
+    static BuildScanApi lookup(PlexusContainer container, Class<?> extensionClass) throws MavenExecutionException {
         ensureBuildScanApiIsAccessible(extensionClass);
         try {
-            return (BuildScanApi) session.lookup(BUILD_SCAN_API_SESSION_OBJECT);
+            return (BuildScanApi) container.lookup(BUILD_SCAN_API_SESSION_OBJECT);
         }  catch (ComponentLookupException e) {
-            throw new MavenExecutionException(String.format("Cannot look up object in session: %s", BUILD_SCAN_API_SESSION_OBJECT), e);
+            throw new MavenExecutionException(String.format("Cannot look up object in container: %s", BUILD_SCAN_API_SESSION_OBJECT), e);
         }
     }
 
